@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Bspwm on 雑記</title>
+    <link>/tags/bspwm/</link>
+    <description>Recent content in Bspwm on 雑記</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Sun, 31 Mar 2019 16:45:31 +0900</lastBuildDate>
+    
+	<atom:link href="/tags/bspwm/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>bspwm 用ステータスバーを作った</title>
+      <link>/posts/bspwmbar/</link>
+      <pubDate>Sun, 31 Mar 2019 16:45:31 +0900</pubDate>
+      
+      <guid>/posts/bspwmbar/</guid>
+      <description>&lt;div id=&#34;preamble&#34;&gt;
+&lt;div class=&#34;sectionbody&#34;&gt;
+&lt;div class=&#34;paragraph&#34;&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/jaagr/polybar&#34;&gt;Polybar&lt;/a&gt; に対する不満を解消するためにステータスバーを自作した。&lt;/p&gt;
+&lt;/div&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

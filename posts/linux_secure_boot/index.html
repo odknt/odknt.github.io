@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+<head><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="description" content="ThinkCentre M715q でセキュアブートしつつ Arch Linux を動かす。
+" />
+<meta name="author" content="odknt" />
+
+<link rel="stylesheet" href="/scss/alchemy.min.40f3ba593fcbbf409f93be222e0d8d3d3dbae93b09bd0a1b573c1ec35d58692b.css" integrity="sha256-QPO6WT/Lv0Cfk74iLg2NPT266TsJvQobVzwew11YaSs=" media="screen">
+
+<title>ArchLinux でセキュアブートする - 雑記</title>
+
+</head>
+<body><header>
+<a href="/" class="header-link"><h1>雑記</h1></a>
+<ul>
+<li><a href="/posts/" title="Posts">Posts</a></li>
+<li><a href="/categories/" title="Categories">Categories</a></li>
+<li><a href="/tags/" title="Tags">Tags</a></li>
+</ul>
+</header>
+<div id="container">
+<main>
+<article class="single">
+<section>
+<h1 class="article-title">ArchLinux でセキュアブートする</h1>
+
+<time>Sun, 03 Feb 2019 13:38:17 JST</time>
+
+<p class="tags"><a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-counter" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script><span class="tag">#Secure Boot</span></p>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>ThinkCentre M715q でセキュアブートしつつ Arch Linux を動かす。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_動機">動機</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>会社で使ってた PC は、ほぼ 10 年ものだったこともあって新しい PC を購入してもらいました。<br>
+しかし、Linux をセットアップして起動すると妙に通信速度が遅く <code>15KB/s</code> 程度しか出ない……。</p>
+</div>
+<div class="paragraph">
+<p>これでは仕事にならないから旧 PC を使い続けようかとも思ったのですが、<br>
+せっかく買ってもらったのに使わないと申し訳ねぇなぁと思いながら色々調べたところ以下が原因であることがわかりました。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>M715q に搭載されている NIC（Realtek 8111/8168/8411）は IOMMU が有効でないと動作が不安定になる</p>
+</li>
+<li>
+<p>この PC で IOMMU を有効化するには Device Guard を有効化する必要がある</p>
+</li>
+<li>
+<p>Device Guard を有効にするとセキュアブートが強制的に有効になる</p>
+</li>
+<li>
+<p>基本 Linux の bootloader は Microsoft の秘密鍵で署名されてないのでセキュアブートが有効になると起動できない</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>「せっかく購入してもらったのにこれは不味い」と思っていたのですが、<br>
+自分で作った秘密鍵で署名して、その鍵を信用させることでクリアできそうなのでやってみました。</p>
+</div>
+<div class="paragraph">
+<p>なお、有効な鍵で署名されたブートローダーに PreLoader と shim があり、<br>
+これらのブートローダーを起動してから GRUB を起動することでセキュアブート下でも起動できるのですが、<br>
+何故かどちらも上手いこと起動できなかったので今回は自分で用意した鍵で署名した GRUB で起動します。</p>
+</div>
+<div class="paragraph">
+<p>また、GRUB が Linux を起動するために Linux カーネルにも署名が必要になります。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_セキュアブートに必要なもの">セキュアブートに必要なもの</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>セキュアブートする際、最低限以下を用意する必要があります。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>PK</code> (Platform Key)</p>
+</li>
+<li>
+<p><code>KEK</code> (Key Exchange Key)</p>
+</li>
+<li>
+<p><code>db</code> (Signature Database)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>PK</code> はトップレベルの鍵で、所謂ルート認証局の鍵です。<br>
+<code>KEK</code> は db 署名用の鍵です。PK で署名されている必要があります。<br>
+<code>db</code> は GRUB のような EFI バイナリを署名するための鍵です。KEK で署名されている必要があります。</p>
+</div>
+<div class="paragraph">
+<p>つまり、 <code>PK</code> -&gt; <code>KEK</code> -&gt; <code>db</code> -&gt; <code>GRUB &amp; Linux</code> のような流れで署名します。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_1_前準備">1. 前準備</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>※以降は、セキュアブートを無効化して起動した Linux 上で作業しています。
+そのため、Linux のセットアップなどは省きます。</p>
+</div>
+<div class="paragraph">
+<p>鍵の所有者を識別するのに GUID が使われるため、生成してファイルに保存しておきます。</p>
+</div>
+<div class="paragraph">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo su -
+sudo mkdir /etc/secureboot <span style="color:#f92672">&amp;&amp;</span> cd $_
+sudo chmod <span style="color:#ae81ff">700</span> .
+uuidgen --random | sudo tee GUID.txt</code></pre></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_pk_作成">2. PK 作成</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">openssl req -newkey rsa:2048 -nodes -keyout PK.key -new -x509 -sha256 -days <span style="color:#ae81ff">3650</span> -subj <span style="color:#e6db74">&#34;/CN=Platform Key/&#34;</span> -out PK.crt
+openssl x509 -outform DER -in PK.crt -out PK.cer
+cert-to-efi-sig-list -g <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>cat GUID.txt<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> PK.crt PK.esl
+sign-efi-sig-list -g <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>cat GUID.txt<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -k PK.key -c PK.crt PK PK.esl PK.auth</code></pre></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_kek_作成">3. KEK 作成</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo openssl req -newkey rsa:2048 -nodes -keyout KEK.key -new -x509 -sha256 -days <span style="color:#ae81ff">3650</span> -subj <span style="color:#e6db74">&#34;/CN=Key Exchange Key/&#34;</span> -out KEK.crt
+sudo openssl x509 -outform DER -in KEK.crt -out KEK.cer
+sudo cert-to-efi-sig-list -g <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>cat GUID.txt<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> KEK.crt KEK.esl
+sudo sign-efi-sig-list -g <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>cat GUID.txt<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -k PK.key -c PK.crt KEK KEK.esl KEK.auth</code></pre></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_4_db_作成">4. db 作成</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo openssl req -newkey rsa:2048 -nodes -keyout db.key -new -x509 -sha256 -days <span style="color:#ae81ff">3650</span> -subj <span style="color:#e6db74">&#34;/CN=Signature Database key/&#34;</span> -out db.crt
+sudo openssl x509 -outform DER -in db.crt -out db.cer
+sudo cert-to-efi-sig-list -g <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>cat GUID.txt<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> db.crt db.esl
+sudo sign-efi-sig-list -g <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>cat GUID.txt<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -k KEK.key -c KEK.crt db db.esl db.auth</code></pre></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_5_grub_と_linux_カーネルを署名">5. GRUB と Linux カーネルを署名</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>GRUB はインストール先が <code>--bootloader-id</code> オプションなどで微妙に変わりますが、<br>
+初期値でインストールされているものとして記述します。</p>
+</div>
+<div class="paragraph">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo sbsign --key db.key --cert db.crt --output /boot/efi/EFI/grub/grubx64.efi /boot/efi/EFI/grub/grubx64.efi
+sudo sbsign --key db.key --cert db.crt --output /boot/vmlinuz-linux /boot/vmlinuz-linux</code></pre></div>
+</div>
+<div class="paragraph">
+<p>ついでに、ArchLinux のパッケージマネージャである pacman にフックスクリプトを追加して、
+カーネルがアップデートされる度に自動で署名するようにします。</p>
+</div>
+<div class="paragraph">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo mkdir -p /etc/pacman.d/hooks/
+cat <span style="color:#e6db74">&lt;&lt;&#39;EOF&#39; | sudo tee /etc/pacman.d/hooks/99-secureboot.hook
+</span><span style="color:#e6db74">[Trigger]
+</span><span style="color:#e6db74">Operation = Install
+</span><span style="color:#e6db74">Operation = Upgrade
+</span><span style="color:#e6db74">Type = Package
+</span><span style="color:#e6db74">Target = linux
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">[Action]
+</span><span style="color:#e6db74">Description = Signing Kernel for SecureBoot
+</span><span style="color:#e6db74">When = PostTransaction
+</span><span style="color:#e6db74">Exec = /usr/bin/sbsign --key /etc/secureboot/db.key --cert /etc/secureboot/db.crt --output /boot/vmlinuz-linux /boot/vmlinuz-linux
+</span><span style="color:#e6db74">Depends = sbsigntools
+</span><span style="color:#e6db74">EOF</span></code></pre></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_6_efi_パーティションに配置">6. EFI パーティションに配置</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>鍵を登録するためには、FAT32 でフォーマットされたパーティションに鍵を置く必要があります。
+UEFI 環境で Linux をセットアップする場合、FAT32 フォーマットされた EFI パーティションが必須なためここに設置します。</p>
+</div>
+<div class="paragraph">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># EFI パーティションが /boot/efi にマウントされているものとして</span>
+sudo mkdir /boot/efi/certs
+sudo cp *.auth /boot/efi/certs</code></pre></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_7_keytool_efi_に署名して配置">7. KeyTool.efi に署名して配置</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>鍵を登録するために KeyTool.efi を使用します。<br>
+セキュアブートを有効にしたあとも起動できるように KeyTool.efi を作った鍵で署名したあと、<br>
+efibootmgr を使って起動できるように設定します。</p>
+</div>
+<div class="paragraph">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># ArchLinux では efitools パッケージに含まれていて、/usr/share/efitools/efi にあります</span>
+sudo sbsign --key db.key --cert db.crt --output /boot/efi/EFI/KeyTool-Signed.efi /usr/share/efitools/efi/KeyTool.efi
+<span style="color:#75715e"># /dev/sda1 が EFI パーティションの場合</span>
+sudo efibootmgr -c -d /dev/sda -p <span style="color:#ae81ff">1</span> -l <span style="color:#e6db74">&#39;KeyTool&#39;</span> -L <span style="color:#e6db74">&#39;\EFI\KEYTOOL-SIGNED.EFI&#39;</span></code></pre></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_8_現在の鍵をバックアップ">8. 現在の鍵をバックアップ</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>鍵を登録すると既存の鍵で署名されている Windows などは起動できなくなるので、<br>
+工場出荷時の鍵を復元できる機能もついているはずですが、念の為にバックアップを保存しておきます。</p>
+</div>
+<div class="paragraph">
+<p>Windows Bootloader に署名してしまえば起動できるかもしれないけれど、Windows を起動するつもりがないので試していない。</p>
+</div>
+<div class="paragraph">
+<p>再起動して Boot Menu を開き、KeyTool を起動したあと、<br>
+Save うんたらみたいな項目があるので EFI パーティションを選び保存する。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_9_鍵を登録">9. 鍵を登録</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>もう一度再起動して今度は BIOS 画面に入りセキュアブートを Setup Mode にするための項目を探して有効化します。<br>
+Setup Mode に移行することで、既存の鍵が消去されます。</p>
+</div>
+<div class="paragraph">
+<p>BIOS の設定を保存したあと、KeyTool を起動し、 <code>KEK -&gt; db -&gt; PK</code> の順で登録します。<br>
+KEK と db は逆でもいいはずですが、PK は登録すると自動で User Mode に設定されるため最後に登録する必要があります。</p>
+</div>
+<div class="paragraph">
+<p>ここまできたら再起動後にセキュアブートを有効化し、今回の目的である Device Guard を有効化します。<br>
+これで M715q でも Linux が満足に使えるようになりました。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_参考">参考</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://wiki.archlinux.jp/index.php/セキュアブート">セキュアブート - ArchWiki</a></p>
+</div>
+</div>
+</div>
+</section>
+</article>
+</main>
+</div><footer>
+<p id="copy">&copy;&nbsp;odknt</p>
+<ul class="author-info">
+<li><a href="https://github.com/odknt" title="GitHub">GitHub</a></li>
+<li><a href="https://twitter.com/odknt" title="Twitter">Twitter</a></li>
+</ul>
+</footer>
+</body>
+</body>
+</html>

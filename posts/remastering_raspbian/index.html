@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+<head><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="description" content="ラズパイ用 OS「Raspbian」をカスタマイズして、大量にセットアップするときの手間を減らす。
+" />
+<meta name="author" content="odknt" />
+
+<link rel="stylesheet" href="/scss/alchemy.min.40f3ba593fcbbf409f93be222e0d8d3d3dbae93b09bd0a1b573c1ec35d58692b.css" integrity="sha256-QPO6WT/Lv0Cfk74iLg2NPT266TsJvQobVzwew11YaSs=" media="screen">
+
+<title>Raspbian イメージのリマスタリング - 雑記</title>
+
+</head>
+<body><header>
+<a href="/" class="header-link"><h1>雑記</h1></a>
+<ul>
+<li><a href="/posts/" title="Posts">Posts</a></li>
+<li><a href="/categories/" title="Categories">Categories</a></li>
+<li><a href="/tags/" title="Tags">Tags</a></li>
+</ul>
+</header>
+<div id="container">
+<main>
+<article class="single">
+<section>
+<h1 class="article-title">Raspbian イメージのリマスタリング</h1>
+
+<time>Sun, 03 Feb 2019 13:10:43 JST</time>
+
+<p class="tags"><a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-counter" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script><span class="tag">#Raspberry Pi</span><span class="tag">#Raspbian</span></p>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>ラズパイ用 OS「Raspbian」をカスタマイズして、大量にセットアップするときの手間を減らす。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_1_イメージを用意">1. イメージを用意</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href=":https://www.raspberrypi.org/downloads/raspbian/">公式サイト</a> から適当にダウンロードしてくる。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_qemu_user_static_をインストール">2. qemu-user-static をインストール</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo pacman -S arch-install-scripts
+<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>AUR_HELPER<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -S binfmt-support qemu-user-static
+
+sudo systemctl start binfmt-support
+sudo systemctl enable binfmt-support</code></pre></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_arm_変換を有効化">3. ARM 変換を有効化</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo update-binfmts --enable qemu-arm</code></pre></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_4_raspbian_イメージをマウント">4. Raspbian イメージをマウント</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo losetup -f -P --show &lt;Raspbian イメージファイル&gt;
+sudo mount /dev/loop0p2 /mnt/
+sudo mount /dev/loop0p1 /mnt/boot</code></pre></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_5_chroot_する">5. chroot する</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo mount -t proc /proc /mnt/proc
+sudo mount --rbind /dev /mnt/dev
+sudo mount --make-rslave /mnt/dev
+sudo mount --rbind /sys /mnt/sys
+sudo mount --make-rslave /mnt/sys
+sudo cp /usr/bin/qemu-arm-static /mnt/usr/bin</code></pre></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_5_適当にセットアップする">5. 適当にセットアップする</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>パッケージを導入したり、設定ファイルを弄ったりする。 <code>exit</code> で終了。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_6_アンマウントする">6. アンマウントする</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">umount -l /mnt/dev<span style="color:#f92672">{</span>/shm,/pts,<span style="color:#f92672">}</span>
+umount -R /mnt</code></pre></div>
+</div>
+</div>
+</div>
+</section>
+</article>
+</main>
+</div><footer>
+<p id="copy">&copy;&nbsp;odknt</p>
+<ul class="author-info">
+<li><a href="https://github.com/odknt" title="GitHub">GitHub</a></li>
+<li><a href="https://twitter.com/odknt" title="Twitter">Twitter</a></li>
+</ul>
+</footer>
+</body>
+</body>
+</html>

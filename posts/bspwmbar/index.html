@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+<head><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="description" content="Polybar に対する不満を解消するためにステータスバーを自作した。
+" />
+<meta name="author" content="odknt" />
+
+<link rel="stylesheet" href="/scss/alchemy.min.40f3ba593fcbbf409f93be222e0d8d3d3dbae93b09bd0a1b573c1ec35d58692b.css" integrity="sha256-QPO6WT/Lv0Cfk74iLg2NPT266TsJvQobVzwew11YaSs=" media="screen">
+
+<title>bspwm 用ステータスバーを作った - 雑記</title>
+
+</head>
+<body><header>
+<a href="/" class="header-link"><h1>雑記</h1></a>
+<ul>
+<li><a href="/posts/" title="Posts">Posts</a></li>
+<li><a href="/categories/" title="Categories">Categories</a></li>
+<li><a href="/tags/" title="Tags">Tags</a></li>
+</ul>
+</header>
+<div id="container">
+<main>
+<article class="single">
+<section>
+<h1 class="article-title">bspwm 用ステータスバーを作った</h1>
+
+<time>Sun, 31 Mar 2019 16:45:31 JST</time>
+
+<p class="tags"><a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-counter" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script><span class="tag">#bspwm</span><span class="tag">#status bar</span><span class="tag">#systray</span></p>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://github.com/jaagr/polybar">Polybar</a> に対する不満を解消するためにステータスバーを自作した。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_polybar_が嫌な理由">Polybar が嫌な理由</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>不満というのは具体的には以下のようなもので、</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>システムトレイがすぐバグる（最新版では結構改善されてる）</p>
+</li>
+<li>
+<p>システムトレイが一番右端なのが嫌（アイコン増えるごとに表示がズレていく）</p>
+</li>
+<li>
+<p>設定ファイルがわかり辛い（ <code>config.h</code> で管理したい）</p>
+</li>
+<li>
+<p>マルチモニタの場合、モニタごとに Polybar を起動しなければならない</p>
+</li>
+<li>
+<p>機能に対してメモリ食いすぎ</p>
+</li>
+<li>
+<p>そもそも殆どの機能使ってない</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>メモリに関しては、今時の物差しでは誤差の範疇ではあるけれども
+使ってる機能だけなら半分くらいにはなるだろうなと思うと段々と気になってきたので自作することにした。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bspwmbar">bspwmbar</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>できました。</p>
+</div>
+<div class="paragraph">
+<p><a href=":https://github.com/odknt/bspwmbar">odknt/bspwmbar</a></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://github.com/odknt/bspwmbar/raw/master/docs/bspwmbar.png" alt="bspwmbar">
+</div>
+<div class="title">Figure 1. screenshot</div>
+</div>
+<div class="paragraph">
+<p>名前の通り完全に bspwm 専用です。<br>
+仕事の合間に 4, 5 日かけて書いたのでコードが汚ない。</p>
+</div>
+<div class="paragraph">
+<p>フォント周りの処理で高 DPI 環境を想定していないのため、多分その手の環境ではサイズがおかしなことになる。<br>
+CPU と MEM の表示はフォント使ってないので、どの環境でも同じような表示になると思う。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_システムトレイ周り">システムトレイ周り</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>ステータスバーは兎も角、システムトレイについてはまったく知識がなかったので勉強しながら作ったんですが、<br>
+この辺りの日本語情報がほぼ無くて辛かった。結局原文を読んだ。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://standards.freedesktop.org/xembed-spec/xembed-spec-latest.html">XEmbed Protocol Specification</a></p>
+</li>
+<li>
+<p><a href="https://specifications.freedesktop.org/systemtray-spec/systemtray-spec-0.2.html">System Tray Protocol Specification</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>これらは仕様が決まっているだけで、特に公式でライブラリが用意されてるわけではないので各自が適当に作っているっぽい。<br>
+とはいえ、トレイアイコンを描画するウィンドウはトレイを表示したいプログラムが用意するので、描画関連でこっちが実装するのは座標調節ぐらいで良い。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_謎の挙動">謎の挙動</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>どういうわけか長時間起動してると、メモリ使用量が減っていく（2MB くらいまで減る）<br>
+多分 Xlib が確保してるメモリが何らかのタイミングで開放されるんだとは思うけれど、よくわからない。</p>
+</div>
+<div class="paragraph">
+<p>上がっているわけではないので問題ないけれど、どうせなら起動後にそのくらいになって欲しい。</p>
+</div>
+</div>
+</div>
+</section>
+</article>
+</main>
+</div><footer>
+<p id="copy">&copy;&nbsp;odknt</p>
+<ul class="author-info">
+<li><a href="https://github.com/odknt" title="GitHub">GitHub</a></li>
+<li><a href="https://twitter.com/odknt" title="Twitter">Twitter</a></li>
+</ul>
+</footer>
+</body>
+</body>
+</html>

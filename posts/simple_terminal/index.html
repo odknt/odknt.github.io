@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+<head><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="description" content="GitHub で管理してるやつ。
+" />
+<meta name="author" content="odknt" />
+
+<link rel="stylesheet" href="/scss/alchemy.min.40f3ba593fcbbf409f93be222e0d8d3d3dbae93b09bd0a1b573c1ec35d58692b.css" integrity="sha256-QPO6WT/Lv0Cfk74iLg2NPT266TsJvQobVzwew11YaSs=" media="screen">
+
+<title>st の XIM/SIXEL 対応 - 雑記</title>
+
+</head>
+<body><header>
+<a href="/" class="header-link"><h1>雑記</h1></a>
+<ul>
+<li><a href="/posts/" title="Posts">Posts</a></li>
+<li><a href="/categories/" title="Categories">Categories</a></li>
+<li><a href="/tags/" title="Tags">Tags</a></li>
+</ul>
+</header>
+<div id="container">
+<main>
+<article class="single">
+<section>
+<h1 class="article-title">st の XIM/SIXEL 対応</h1>
+
+<time>Fri, 27 Jul 2018 11:24:21 JST</time>
+
+<p class="tags"><a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-counter" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script><span class="tag">#st</span></p>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://github.com/odknt/st">GitHub</a> で管理してるやつ。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_修正内容">修正内容</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>以下の内容を追加している。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>XIM(over-the-spot) 対応</p>
+</li>
+<li>
+<p><a href="https://gist.github.com/saitoha/70e0fdf22e3e8f63ce937c7f7da71809">SIXEL パッチ</a>（最新で適用できるようにした）</p>
+</li>
+<li>
+<p>SIXEL パッチのセグフォ修正</p>
+</li>
+<li>
+<p><a href="https://st.suckless.org/patches/scrollback/">scrollback パッチ</a>（Shift&#43;PageUp/Down でのスクロールバック）</p>
+</li>
+<li>
+<p><a href="https://st.suckless.org/patches/vertcenter/">vertcenter パッチ</a>（縦の中央揃え）</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>ArchLinux ユーザで XIM 対応だけ欲しい人は、
+<a href="https://github.com/gnotclub/xst">xst</a>
+にマージしてもらったので、
+<a href="https://aur.archlinux.org/packages/xst-git">xst-git</a>
+とかでインストールすると楽かもしれない。</p>
+</div>
+<div class="paragraph">
+<p>SIXEL は最新のソースだとパッチが適用できなかったので、適用できるようにあちこち修正している。<br>
+一応動作確認してはいるけれど、tmux 常用しているとあまり使用する機会がないので <code>sixel</code> ブランチに隔離している。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_他のターミナルエミュレータ">他のターミナルエミュレータ</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>rxvt-unicode や mlterm も悪くはないんだけど、</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>rxvt-unicode はパッチ当てないとまともに絵文字表示できない（パッチ当ててもちょっと表示に問題がある）</p>
+</li>
+<li>
+<p>mlterm はフォント設定細かすぎてちょっと面倒だし、フォントのフェールバックが上手く動いてないような気がする</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>st はコード量少なくてメンテしやすいし、先に挙げた 2 つの問題をクリアしてるので XIM 対応すればかなり使いやすい。</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/jwilm/alacritty">alacritty</a> も over-the-spot に対応させてみたけれど、<br>
+依存ライブラリの依存ライブラリまで修正する必要があって PR 作成する気力が失せてしまった。<br>
+そもそも <code>st</code> と比べて動作速いのか体感できなくてメモリ消費増えてるだけ損している気分になる。</p>
+</div>
+</div>
+</div>
+</section>
+</article>
+</main>
+</div><footer>
+<p id="copy">&copy;&nbsp;odknt</p>
+<ul class="author-info">
+<li><a href="https://github.com/odknt" title="GitHub">GitHub</a></li>
+<li><a href="https://twitter.com/odknt" title="Twitter">Twitter</a></li>
+</ul>
+</footer>
+</body>
+</body>
+</html>

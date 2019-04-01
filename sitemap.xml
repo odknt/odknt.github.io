@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>/posts/bspwmbar/</loc>
+    <lastmod>2019-03-31T16:45:31+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/linux_secure_boot/</loc>
+    <lastmod>2019-02-03T13:38:17+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/remastering_raspbian/</loc>
+    <lastmod>2019-02-03T13:10:43+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/simple_terminal/</loc>
+    <lastmod>2018-07-27T11:24:21+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/bspwm/</loc>
+    <lastmod>2019-03-31T16:45:31+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/linux/</loc>
+    <lastmod>2019-02-03T13:38:17+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/posts/</loc>
+    <lastmod>2019-03-31T16:45:31+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/raspberry-pi/</loc>
+    <lastmod>2019-02-03T13:10:43+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/raspbian/</loc>
+    <lastmod>2019-02-03T13:10:43+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/secure-boot/</loc>
+    <lastmod>2019-02-03T13:38:17+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/software/</loc>
+    <lastmod>2019-03-31T16:45:31+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/st/</loc>
+    <lastmod>2018-07-27T11:24:21+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/status-bar/</loc>
+    <lastmod>2019-03-31T16:45:31+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/systray/</loc>
+    <lastmod>2019-03-31T16:45:31+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2019-03-31T16:45:31+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2019-03-31T16:45:31+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

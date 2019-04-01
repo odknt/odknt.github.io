@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Raspberry Pi on 雑記</title>
+    <link>/tags/raspberry-pi/</link>
+    <description>Recent content in Raspberry Pi on 雑記</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Sun, 03 Feb 2019 13:10:43 +0900</lastBuildDate>
+    
+	<atom:link href="/tags/raspberry-pi/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Raspbian イメージのリマスタリング</title>
+      <link>/posts/remastering_raspbian/</link>
+      <pubDate>Sun, 03 Feb 2019 13:10:43 +0900</pubDate>
+      
+      <guid>/posts/remastering_raspbian/</guid>
+      <description>&lt;div id=&#34;preamble&#34;&gt;
+&lt;div class=&#34;sectionbody&#34;&gt;
+&lt;div class=&#34;paragraph&#34;&gt;
+&lt;p&gt;ラズパイ用 OS「Raspbian」をカスタマイズして、大量にセットアップするときの手間を減らす。&lt;/p&gt;
+&lt;/div&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

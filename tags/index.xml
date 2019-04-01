@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on 雑記</title>
+    <link>/tags/</link>
+    <description>Recent content in Tags on 雑記</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Sun, 31 Mar 2019 16:45:31 +0900</lastBuildDate>
+    
+	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Bspwm</title>
+      <link>/tags/bspwm/</link>
+      <pubDate>Sun, 31 Mar 2019 16:45:31 +0900</pubDate>
+      
+      <guid>/tags/bspwm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Raspberry Pi</title>
+      <link>/tags/raspberry-pi/</link>
+      <pubDate>Sun, 03 Feb 2019 13:10:43 +0900</pubDate>
+      
+      <guid>/tags/raspberry-pi/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Raspbian</title>
+      <link>/tags/raspbian/</link>
+      <pubDate>Sun, 03 Feb 2019 13:10:43 +0900</pubDate>
+      
+      <guid>/tags/raspbian/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Secure Boot</title>
+      <link>/tags/secure-boot/</link>
+      <pubDate>Sun, 03 Feb 2019 13:38:17 +0900</pubDate>
+      
+      <guid>/tags/secure-boot/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>St</title>
+      <link>/tags/st/</link>
+      <pubDate>Fri, 27 Jul 2018 11:24:21 +0900</pubDate>
+      
+      <guid>/tags/st/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Status Bar</title>
+      <link>/tags/status-bar/</link>
+      <pubDate>Sun, 31 Mar 2019 16:45:31 +0900</pubDate>
+      
+      <guid>/tags/status-bar/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Systray</title>
+      <link>/tags/systray/</link>
+      <pubDate>Sun, 31 Mar 2019 16:45:31 +0900</pubDate>
+      
+      <guid>/tags/systray/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
