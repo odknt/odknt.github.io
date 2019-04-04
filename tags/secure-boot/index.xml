@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Secure Boot on 雑記</title>
-    <link>/tags/secure-boot/</link>
+    <link>https://odknt.github.io/tags/secure-boot/</link>
     <description>Recent content in Secure Boot on 雑記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
     <lastBuildDate>Sun, 03 Feb 2019 13:38:17 +0900</lastBuildDate>
     
-	<atom:link href="/tags/secure-boot/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://odknt.github.io/tags/secure-boot/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>ArchLinux でセキュアブートする</title>
-      <link>/posts/linux_secure_boot/</link>
+      <link>https://odknt.github.io/posts/linux_secure_boot/</link>
       <pubDate>Sun, 03 Feb 2019 13:38:17 +0900</pubDate>
       
-      <guid>/posts/linux_secure_boot/</guid>
+      <guid>https://odknt.github.io/posts/linux_secure_boot/</guid>
       <description>&lt;div id=&#34;preamble&#34;&gt;
 &lt;div class=&#34;sectionbody&#34;&gt;
 &lt;div class=&#34;paragraph&#34;&gt;

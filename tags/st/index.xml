@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>St on 雑記</title>
-    <link>/tags/st/</link>
+    <link>https://odknt.github.io/tags/st/</link>
     <description>Recent content in St on 雑記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
     <lastBuildDate>Fri, 27 Jul 2018 11:24:21 +0900</lastBuildDate>
     
-	<atom:link href="/tags/st/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://odknt.github.io/tags/st/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>st の XIM/SIXEL 対応</title>
-      <link>/posts/simple_terminal/</link>
+      <link>https://odknt.github.io/posts/simple_terminal/</link>
       <pubDate>Fri, 27 Jul 2018 11:24:21 +0900</pubDate>
       
-      <guid>/posts/simple_terminal/</guid>
+      <guid>https://odknt.github.io/posts/simple_terminal/</guid>
       <description>&lt;div id=&#34;preamble&#34;&gt;
 &lt;div class=&#34;sectionbody&#34;&gt;
 &lt;div class=&#34;paragraph&#34;&gt;

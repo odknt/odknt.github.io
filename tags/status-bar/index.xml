@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Status Bar on 雑記</title>
-    <link>/tags/status-bar/</link>
+    <link>https://odknt.github.io/tags/status-bar/</link>
     <description>Recent content in Status Bar on 雑記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
     <lastBuildDate>Sun, 31 Mar 2019 16:45:31 +0900</lastBuildDate>
     
-	<atom:link href="/tags/status-bar/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://odknt.github.io/tags/status-bar/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>bspwm 用ステータスバーを作った</title>
-      <link>/posts/bspwmbar/</link>
+      <link>https://odknt.github.io/posts/bspwmbar/</link>
       <pubDate>Sun, 31 Mar 2019 16:45:31 +0900</pubDate>
       
-      <guid>/posts/bspwmbar/</guid>
+      <guid>https://odknt.github.io/posts/bspwmbar/</guid>
       <description>&lt;div id=&#34;preamble&#34;&gt;
 &lt;div class=&#34;sectionbody&#34;&gt;
 &lt;div class=&#34;paragraph&#34;&gt;
